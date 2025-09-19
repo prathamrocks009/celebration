@@ -21,10 +21,11 @@
             min-height: -webkit-fill-available;
             display: flex;
             justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            align-items: flex-start;
+            overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
-            touch-action: none;
+            padding: 10px 0;
         }
 
         /* Animated cosmic background */
@@ -120,48 +121,51 @@
             position: relative;
             z-index: 100;
             width: 100%;
-            max-width: 900px;
-            padding: 10px;
+            max-width: 100%;
+            padding: 60px 10px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow: visible;
             margin: 0 auto;
+            min-height: 100vh;
         }
 
-        /* Title */
+        /* Title - Mobile optimized */
         .game-title {
             color: #ffd700;
-            font-size: clamp(1.2rem, 4vw, 2.5rem);
+            font-size: clamp(1.1rem, 4vw, 2rem);
             font-weight: 900;
             text-align: center;
             margin-bottom: 5px;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
             letter-spacing: 1px;
+            padding: 0 10px;
         }
 
         .subtitle {
             color: rgba(255, 255, 255, 0.7);
-            font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+            font-size: clamp(0.75rem, 2.5vw, 1rem);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            padding: 0 10px;
         }
 
         /* Boxes container */
         .boxes-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             width: 100%;
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 5px;
+            max-width: 400px;
         }
 
-        @media (max-width: 600px) {
+        @media (min-width: 768px) {
             .boxes-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                padding: 5px;
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 600px;
             }
         }
 
@@ -169,13 +173,13 @@
         .mystery-box {
             width: 100%;
             aspect-ratio: 1;
-            min-width: 100px;
-            max-width: 200px;
+            min-width: 80px;
+            max-width: 180px;
             margin: 0 auto;
             position: relative;
             transform-style: preserve-3d;
             animation: hover 3s ease-in-out infinite;
-            filter: drop-shadow(0 10px 20px rgba(255, 215, 0, 0.3));
+            filter: drop-shadow(0 5px 10px rgba(255, 215, 0, 0.3));
         }
 
         .mystery-box:nth-child(1) { animation-delay: 0s; }
@@ -222,6 +226,7 @@
             100% { transform: rotateY(360deg) scale(1); }
         }
 
+        /* Box face - Mobile optimized */
         .box-face {
             position: absolute;
             width: 100%;
@@ -229,19 +234,19 @@
             background: 
                 radial-gradient(circle at 30% 30%, rgba(255, 223, 0, 0.4), transparent 50%),
                 linear-gradient(135deg, #8b4513 0%, #cd853f 25%, #daa520 50%, #b8860b 75%, #8b4513 100%);
-            border: 3px solid #ffd700;
+            border: 2px solid #ffd700;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: clamp(2rem, 8vw, 3rem);
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
             box-shadow: 
-                inset 0 0 30px rgba(255, 215, 0, 0.5),
-                inset -5px -5px 15px rgba(0, 0, 0, 0.3),
-                inset 5px 5px 15px rgba(255, 255, 255, 0.3),
-                0 0 50px rgba(255, 215, 0, 0.2);
+                inset 0 0 20px rgba(255, 215, 0, 0.5),
+                inset -3px -3px 10px rgba(0, 0, 0, 0.3),
+                inset 3px 3px 10px rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(255, 215, 0, 0.2);
             overflow: hidden;
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .box-face::before {
@@ -352,23 +357,31 @@
             50% { opacity: 1; }
         }
 
+        /* Golden Key Container */
+        .key-area {
+            position: sticky;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(10, 10, 10, 1) 60%, rgba(10, 10, 10, 0));
+            padding: 10px 0 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 150;
+        }
+
         /* Golden Key */
         .golden-key {
             position: relative;
-            margin: 10px auto;
-            width: 50px;
-            height: 120px;
+            width: 45px;
+            height: 100px;
             cursor: grab;
             z-index: 200;
-            filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 0.5));
+            filter: drop-shadow(0 5px 20px rgba(255, 215, 0, 0.6));
             transition: all 0.3s;
             animation: keyFloat 3s ease-in-out infinite;
             touch-action: none;
-        }
-
-        .golden-key:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 15px 40px rgba(255, 215, 0, 0.8));
+            margin: 0 auto;
         }
 
         .golden-key:active {
@@ -380,26 +393,26 @@
             animation: none !important;
             transition: none !important;
             cursor: grabbing !important;
-            filter: drop-shadow(0 20px 50px rgba(255, 215, 0, 1)) !important;
-            transform: translate(-50%, -50%) scale(1.3) !important;
+            filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 1)) !important;
+            transform: translate(-50%, -50%) scale(1.2) !important;
             position: fixed !important;
         }
 
         @keyframes keyFloat {
-            0%, 100% { transform: translateY(0) rotate(-3deg); }
-            50% { transform: translateY(-8px) rotate(3deg); }
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-5px) rotate(2deg); }
         }
 
         .key-handle {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: radial-gradient(circle at 30% 30%, #ffed4e, #ffd700 40%, #b8860b);
             border-radius: 50%;
             position: relative;
             box-shadow: 
-                inset -3px -3px 10px rgba(0,0,0,0.3),
-                inset 3px 3px 10px rgba(255,255,255,0.3),
-                0 0 30px rgba(255,215,0,0.6);
+                inset -2px -2px 8px rgba(0,0,0,0.3),
+                inset 2px 2px 8px rgba(255,255,255,0.3),
+                0 0 20px rgba(255,215,0,0.6);
         }
 
         .key-handle::before {
@@ -408,27 +421,27 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .key-shaft {
-            width: 12px;
-            height: 50px;
+            width: 10px;
+            height: 40px;
             background: linear-gradient(to bottom, #ffd700, #b8860b);
             margin: 0 auto;
             position: relative;
             box-shadow: 
-                inset -2px 0 5px rgba(0,0,0,0.3),
-                inset 2px 0 5px rgba(255,255,255,0.3);
+                inset -1px 0 3px rgba(0,0,0,0.3),
+                inset 1px 0 3px rgba(255,255,255,0.3);
         }
 
         .key-teeth {
-            width: 25px;
-            height: 20px;
+            width: 22px;
+            height: 15px;
             background: linear-gradient(to bottom, #ffd700, #b8860b);
             margin: 0 auto;
             clip-path: polygon(0 0, 100% 0, 100% 50%, 80% 50%, 80% 100%, 60% 100%, 60% 50%, 40% 50%, 40% 100%, 20% 100%, 20% 50%, 0 50%);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         /* Result popup */
@@ -823,9 +836,9 @@
                 const viewportWidth = window.innerWidth;
                 const viewportHeight = window.innerHeight;
                 
-                // Key dimensions
-                const keyWidth = 50;
-                const keyHeight = 120;
+                // Key dimensions (smaller for mobile)
+                const keyWidth = 45;
+                const keyHeight = 100;
                 
                 // Calculate position (centered on cursor/touch)
                 let x = touch.clientX;
