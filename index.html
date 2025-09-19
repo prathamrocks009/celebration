@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💰 Sonal's Surprise Treasure Hunt!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            touch-action: none;
+        }
+
+        /* Animated cosmic background */
+        .universe {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            overflow: hidden;
+        }
+
+        .universe::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="white" opacity="0.3"/></svg>');
+            background-size: 100px 100px;
+            animation: drift 60s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes drift {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Northern lights effect */
+        .aurora {
+            position: absolute;
+            width: 200%;
+            height: 60%;
+            top: 0;
+            left: -50%;
+            background: linear-gradient(0deg, transparent, 
+                rgba(0, 255, 200, 0.1) 20%, 
+                rgba(100, 0, 255, 0.1) 40%, 
+                rgba(255, 0, 150, 0.1) 60%, 
+                transparent);
+            filter: blur(60px);
+            animation: aurora 15s ease-in-out infinite;
+        }
+
+        @keyframes aurora {
+            0%, 100% { transform: translateX(0) translateY(-100px); opacity: 0.5; }
+            50% { transform: translateX(30%) translateY(0); opacity: 1; }
+        }
+
+        /* Floating particles */
+        .particle-field {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 20s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+        }
+
+        /* Main container */
+        .main-container {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            max-width: 900px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: visible;
+            margin: 0 auto;
+        }
+
+        /* Title */
+        .game-title {
+            color: #ffd700;
+            font-size: clamp(1.2rem, 4vw, 2.5rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 5px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Boxes container */
+        .boxes-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .boxes-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 5px;
+            }
+        }
+
+        /* Mystery box */
+        .mystery-box {
+            width: 100%;
+            aspect-ratio: 1;
+            min-width: 100px;
+            max-width: 200px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: hover 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(255, 215, 0, 0.3));
+        }
+
+        .mystery-box:nth-child(1) { animation-delay: 0s; }
+        .mystery-box:nth-child(2) { animation-delay: 0.5s; }
+        .mystery-box:nth-child(3) { animation-delay: 1s; }
+        .mystery-box:nth-child(4) { animation-delay: 1.5s; }
+        .mystery-box:nth-child(5) { animation-delay: 2s; }
+        .mystery-box:nth-child(6) { animation-delay: 2.5s; }
+
+        .mystery-box.ready-to-open {
+            filter: drop-shadow(0 30px 60px rgba(255, 215, 0, 0.8));
+            animation: hover 0.3s ease-in-out infinite;
+        }
+
+        .mystery-box.opened {
+            animation: none;
+            filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.2));
+        }
+
+        .mystery-box.winner-box {
+            animation: none;
+        }
+
+        @keyframes hover {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        .box-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .box-container.opening {
+            animation: boxOpen 1.5s ease-out forwards;
+        }
+
+        @keyframes boxOpen {
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.1); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+
+        .box-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 223, 0, 0.4), transparent 50%),
+                linear-gradient(135deg, #8b4513 0%, #cd853f 25%, #daa520 50%, #b8860b 75%, #8b4513 100%);
+            border: 3px solid #ffd700;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(2rem, 8vw, 3rem);
+            box-shadow: 
+                inset 0 0 30px rgba(255, 215, 0, 0.5),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.3),
+                inset 5px 5px 15px rgba(255, 255, 255, 0.3),
+                0 0 50px rgba(255, 215, 0, 0.2);
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .box-face::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        /* Box number */
+        .box-number {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffd700;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 2px solid #ffd700;
+        }
+
+        /* Keyhole */
+        .keyhole {
+            width: 25px;
+            height: 35px;
+            background: #000;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 
+                inset 0 0 10px rgba(255, 215, 0, 0.5),
+                0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .keyhole::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: #000;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .keyhole.glowing {
+            animation: keyholeGlow 0.5s ease-in-out;
+        }
+
+        @keyframes keyholeGlow {
+            0%, 100% { 
+                box-shadow: 
+                    inset 0 0 10px rgba(255, 215, 0, 0.5), 
+                    0 0 20px rgba(0, 0, 0, 0.5);
+                background: #000;
+            }
+            50% { 
+                box-shadow: 
+                    inset 0 0 30px rgba(255, 215, 0, 1), 
+                    0 0 50px rgba(255, 215, 0, 0.8);
+                background: radial-gradient(circle, rgba(255, 215, 0, 0.2), #000);
+            }
+        }
+
+        /* Lock */
+        .lock-icon {
+            font-size: 2rem;
+        }
+
+        /* Key instruction */
+        .key-instruction {
+            color: #ffd700;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: glow 2s ease-in-out infinite;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            backdrop-filter: blur(10px);
+            margin-bottom: 10px;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Golden Key */
+        .golden-key {
+            position: relative;
+            margin: 10px auto;
+            width: 50px;
+            height: 120px;
+            cursor: grab;
+            z-index: 200;
+            filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 0.5));
+            transition: all 0.3s;
+            animation: keyFloat 3s ease-in-out infinite;
+            touch-action: none;
+        }
+
+        .golden-key:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 15px 40px rgba(255, 215, 0, 0.8));
+        }
+
+        .golden-key:active {
+            cursor: grabbing;
+            transform: scale(1.15);
+        }
+
+        .golden-key.dragging {
+            animation: none !important;
+            transition: none !important;
+            cursor: grabbing !important;
+            filter: drop-shadow(0 20px 50px rgba(255, 215, 0, 1)) !important;
+            transform: translate(-50%, -50%) scale(1.3) !important;
+            position: fixed !important;
+        }
+
+        @keyframes keyFloat {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .key-handle {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 30% 30%, #ffed4e, #ffd700 40%, #b8860b);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 
+                inset -3px -3px 10px rgba(0,0,0,0.3),
+                inset 3px 3px 10px rgba(255,255,255,0.3),
+                0 0 30px rgba(255,215,0,0.6);
+        }
+
+        .key-handle::before {
+            content: '🔑';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+        }
+
+        .key-shaft {
+            width: 12px;
+            height: 50px;
+            background: linear-gradient(to bottom, #ffd700, #b8860b);
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 
+                inset -2px 0 5px rgba(0,0,0,0.3),
+                inset 2px 0 5px rgba(255,255,255,0.3);
+        }
+
+        .key-teeth {
+            width: 25px;
+            height: 20px;
+            background: linear-gradient(to bottom, #ffd700, #b8860b);
+            margin: 0 auto;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 80% 50%, 80% 100%, 60% 100%, 60% 50%, 40% 50%, 40% 100%, 20% 100%, 20% 50%, 0 50%);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Result popup */
+        .result-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 30px;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            z-index: 600;
+            opacity: 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #ffd700;
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .result-popup.show {
+            animation: popupShow 0.5s forwards;
+        }
+
+        @keyframes popupShow {
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .result-popup.success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .result-emoji {
+            font-size: 4rem;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .result-message {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .close-popup {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: #ffd700;
+            border: none;
+            border-radius: 50px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-popup:hover {
+            transform: scale(1.1);
+            background: #ffed4e;
+        }
+
+        /* Money reveal */
+        .money-reveal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        .money-reveal.show {
+            animation: moneyAppear 1.5s forwards;
+            pointer-events: all;
+        }
+
+        @keyframes moneyAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(360deg);
+            }
+        }
+
+        .money-amount {
+            font-size: clamp(5rem, 18vw, 10rem);
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #fff, #ffd700);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: goldShine 2s linear infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+            margin: 10px 0;
+            line-height: 1;
+        }
+
+        @keyframes goldShine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        .celebration-header {
+            color: #ffd700;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .achievement-text {
+            color: #fff;
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            animation: slideUp 0.8s forwards 0.3s;
+            opacity: 0;
+        }
+
+        .congrats-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(1rem, 3.5vw, 1.5rem);
+            font-weight: 500;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: slideUp 0.8s forwards 0.5s;
+            margin-bottom: 30px;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Claim button */
+        .claim-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: none;
+            border-radius: 50px;
+            color: #000;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            opacity: 0;
+            animation: slideUp 0.8s forwards 1s;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s;
+        }
+
+        .claim-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 400;
+        }
+
+        /* Attempts counter */
+        .attempts-counter {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #ffd700;
+            font-weight: bold;
+            border: 2px solid #ffd700;
+            z-index: 150;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .boxes-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 10px;
+            }
+            
+            .mystery-box {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="universe"></div>
+    <div class="aurora"></div>
+    <div class="particle-field" id="particleField"></div>
+    <div class="confetti-container" id="confettiContainer"></div>
+    
+    <!-- Attempts counter -->
+    <div class="attempts-counter">
+        Attempts: <span id="attemptCount">0</span>/6
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container" id="mainContainer">
+        <h1 class="game-title">🎁 SONAL'S SURPRISE 🎁</h1>
+        <p class="subtitle">There's a special surprise hidden! Can you find it?</p>
+
+        <!-- Boxes Grid -->
+        <div class="boxes-container">
+            <div class="mystery-box" data-box-id="1">
+                <div class="box-container">
+                    <div class="box-face">
+                        <div class="box-number">1</div>
+                        <div class="keyhole"></div>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mystery-box" data-box-id="2">
+                <div class="box-container">
+                    <div class="box-face">
+                        <div class="box-number">2</div>
+                        <div class="keyhole"></div>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mystery-box" data-box-id="3">
+                <div class="box-container">
+                    <div class="box-face">
+                        <div class="box-number">3</div>
+                        <div class="keyhole"></div>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mystery-box" data-box-id="4">
+                <div class="box-container">
+                    <div class="box-face">
+                        <div class="box-number">4</div>
+                        <div class="keyhole"></div>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mystery-box" data-box-id="5">
+                <div class="box-container">
+                    <div class="box-face">
+                        <div class="box-number">5</div>
+                        <div class="keyhole"></div>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mystery-box" data-box-id="6">
+                <div class="box-container">
+                    <div class="box-face">
+                        <div class="box-number">6</div>
+                        <div class="keyhole"></div>
+                        <span class="lock-icon">🔒</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="key-instruction" id="keyInstruction">
+            🔑 DRAG THE KEY TO ANY BOX 🔑
+        </div>
+
+        <!-- Golden Key -->
+        <div class="golden-key" id="goldenKey">
+            <div class="key-handle"></div>
+            <div class="key-shaft"></div>
+            <div class="key-teeth"></div>
+        </div>
+    </div>
+
+    <!-- Result Popup -->
+    <div class="result-popup" id="resultPopup">
+        <div class="result-emoji" id="resultEmoji">😢</div>
+        <div class="result-text" id="resultText">Empty Box!</div>
+        <div class="result-message" id="resultMessage">Try another box!</div>
+        <button class="close-popup" id="closePopup">Continue Searching</button>
+    </div>
+
+    <!-- Money Reveal -->
+    <div class="money-reveal" id="moneyReveal">
+        <div class="celebration-header">🎊 CONGRATULATIONS SONAL! 🎊</div>
+        <div class="money-amount">₹7000</div>
+        <div class="achievement-text">SALES ACHIEVED THIS WEEK!</div>
+        <div class="congrats-text">Amazing work on reaching this milestone!</div>
+        <button class="claim-button" id="claimButton">CELEBRATE 🎉</button>
+    </div>
+
+    <script>
+        // Game variables
+        let winningBox = Math.floor(Math.random() * 6) + 1;
+        let attempts = 0;
+        let openedBoxes = new Set();
+        let gameWon = false;
+
+        // Create floating particles
+        function createParticles() {
+            const field = document.getElementById('particleField');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = 15 + Math.random() * 10 + 's';
+                field.appendChild(particle);
+            }
+        }
+
+        // Key drag and drop functionality
+        function initKeyDrag() {
+            const key = document.getElementById('goldenKey');
+            const boxes = document.querySelectorAll('.mystery-box');
+            const keyInstruction = document.getElementById('keyInstruction');
+            
+            let isDragging = false;
+            let currentBox = null;
+
+            // Mouse events
+            key.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+
+            // Touch events
+            key.addEventListener('touchstart', startDrag, {passive: false});
+            document.addEventListener('touchmove', drag, {passive: false});
+            document.addEventListener('touchend', endDrag, {passive: false});
+
+            function startDrag(e) {
+                if (gameWon) return;
+                isDragging = true;
+                key.classList.add('dragging');
+                
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function drag(e) {
+                if (!isDragging || gameWon) return;
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const touch = e.type.includes('touch') ? e.touches[0] : e;
+                
+                // Get viewport boundaries
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                
+                // Key dimensions
+                const keyWidth = 50;
+                const keyHeight = 120;
+                
+                // Calculate position (centered on cursor/touch)
+                let x = touch.clientX;
+                let y = touch.clientY;
+                
+                // Apply viewport constraints
+                const minX = keyWidth / 2;
+                const maxX = viewportWidth - keyWidth / 2;
+                const minY = keyHeight / 2;
+                const maxY = viewportHeight - keyHeight / 2;
+                
+                x = Math.max(minX, Math.min(maxX, x));
+                y = Math.max(minY, Math.min(maxY, y));
+                
+                // Position the key
+                key.style.position = 'fixed';
+                key.style.left = x + 'px';
+                key.style.top = y + 'px';
+                key.style.transform = 'translate(-50%, -50%) scale(1.3)';
+                key.style.zIndex = '1000';
+                
+                // Get key's actual position after positioning
+                const keyRect = key.getBoundingClientRect();
+                currentBox = null;
+                
+                // Check overlap with each box
+                boxes.forEach(box => {
+                    if (box.classList.contains('opened')) return;
+                    
+                    const boxRect = box.getBoundingClientRect();
+                    const keyhole = box.querySelector('.keyhole');
+                    
+                    // Check if key overlaps with box
+                    const isOverlapping = !(
+                        keyRect.right < boxRect.left || 
+                        keyRect.left > boxRect.right || 
+                        keyRect.bottom < boxRect.top || 
+                        keyRect.top > boxRect.bottom
+                    );
+                    
+                    if (isOverlapping) {
+                        box.classList.add('ready-to-open');
+                        if (keyhole) keyhole.classList.add('glowing');
+                        currentBox = box;
+                        keyInstruction.innerHTML = '🎯 RELEASE TO OPEN BOX ' + box.dataset.boxId + '! 🎯';
+                        keyInstruction.style.color = '#00ff00';
+                        keyInstruction.style.borderColor = '#00ff00';
+                    } else {
+                        box.classList.remove('ready-to-open');
+                        if (keyhole) keyhole.classList.remove('glowing');
+                    }
+                });
+                
+                if (!currentBox) {
+                    keyInstruction.innerHTML = '🔑 DRAG THE KEY TO ANY BOX 🔑';
+                    keyInstruction.style.color = '#ffd700';
+                    keyInstruction.style.borderColor = 'rgba(255, 215, 0, 0.5)';
+                }
+            }
+
+            function endDrag(e) {
+                if (!isDragging || gameWon) return;
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                isDragging = false;
+                key.classList.remove('dragging');
+                
+                if (currentBox && !currentBox.classList.contains('opened')) {
+                    // Open this box!
+                    openBox(currentBox);
+                }
+                
+                // Return key to original position
+                key.style.transition = 'all 0.5s ease-in-out';
+                key.style.position = 'relative';
+                key.style.left = '';
+                key.style.top = '';
+                key.style.transform = '';
+                key.style.zIndex = '200';
+                
+                setTimeout(() => {
+                    key.style.transition = 'all 0.3s';
+                }, 500);
+                
+                // Reset all boxes
+                boxes.forEach(box => {
+                    box.classList.remove('ready-to-open');
+                    const keyhole = box.querySelector('.keyhole');
+                    if (keyhole) keyhole.classList.remove('glowing');
+                });
+                
+                keyInstruction.innerHTML = '🔑 DRAG THE KEY TO ANY BOX 🔑';
+                keyInstruction.style.color = '#ffd700';
+                keyInstruction.style.borderColor = 'rgba(255, 215, 0, 0.5)';
+            }
+
+            function openBox(box) {
+                const boxId = parseInt(box.dataset.boxId);
+                const boxContainer = box.querySelector('.box-container');
+                const lockIcon = box.querySelector('.lock-icon');
+                
+                if (openedBoxes.has(boxId)) return;
+                
+                openedBoxes.add(boxId);
+                attempts++;
+                document.getElementById('attemptCount').textContent = attempts;
+                
+                box.classList.add('opened');
+                boxContainer.classList.add('opening');
+                lockIcon.textContent = '🔓';
+                
+                // Vibrate on mobile
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
+                
+                setTimeout(() => {
+                    if (boxId === winningBox) {
+                        // Winner!
+                        gameWon = true;
+                        showWinner();
+                    } else {
+                        // Empty box
+                        showEmptyBox(boxId);
+                    }
+                }, 1000);
+            }
+
+            function showEmptyBox(boxId) {
+                const popup = document.getElementById('resultPopup');
+                const emoji = document.getElementById('resultEmoji');
+                const text = document.getElementById('resultText');
+                const message = document.getElementById('resultMessage');
+                const button = document.getElementById('closePopup');
+                
+                const messages = [
+                    '💔 Empty! Keep looking for the surprise, Sonal!',
+                    '😅 Not here! The achievement is in another box!',
+                    '🤔 Nope! Your surprise is elsewhere!',
+                    '😮 Empty! Don\'t give up, Sonal!',
+                    '🎲 Wrong box! Try your luck again!'
+                ];
+                
+                emoji.textContent = '📦';
+                text.textContent = 'Box ' + boxId + ' is Empty!';
+                message.textContent = messages[Math.floor(Math.random() * messages.length)];
+                
+                if (attempts >= 5) {
+                    button.textContent = 'Last Chance!';
+                    button.style.background = 'linear-gradient(45deg, #ff6b6b, #ff8787)';
+                }
+                
+                popup.classList.remove('success');
+                popup.classList.add('show');
+                
+                button.onclick = function() {
+                    popup.classList.remove('show');
+                    if (openedBoxes.size === 5) {
+                        // Auto-win on last box
+                        setTimeout(() => {
+                            gameWon = true;
+                            showWinner();
+                        }, 500);
+                    }
+                };
+            }
+
+            function showWinner() {
+                const moneyReveal = document.getElementById('moneyReveal');
+                const boxes = document.getElementById('mainContainer');
+                
+                // Hide boxes
+                boxes.style.display = 'none';
+                
+                // Show money
+                moneyReveal.classList.add('show');
+                
+                // Create massive celebration
+                createConfetti();
+                createFireworks();
+                createCoinRain();
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200, 100, 500]);
+                }
+            }
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#ffd700', '#ff6b6b', '#667eea', '#4ecdc4', '#764ba2', '#f5576c'];
+            
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.cssText = `
+                        position: absolute;
+                        width: ${Math.random() * 10 + 5}px;
+                        height: ${Math.random() * 10 + 5}px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        left: ${Math.random() * 100}%;
+                        animation: confettiFall ${2 + Math.random() * 2}s linear forwards;
+                        opacity: 0;
+                    `;
+                    container.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 15);
+            }
+        }
+
+        // Create fireworks
+        function createFireworks() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#764ba2'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const x = 10 + Math.random() * 80;
+                    const y = 10 + Math.random() * 60;
+                    
+                    for (let j = 0; j < 20; j++) {
+                        const firework = document.createElement('div');
+                        firework.style.cssText = `
+                            position: absolute;
+                            width: 4px;
+                            height: 4px;
+                            border-radius: 50%;
+                            left: ${x}%;
+                            top: ${y}%;
+                            background: ${colors[Math.floor(Math.random() * colors.length)]};
+                            box-shadow: 0 0 6px currentColor;
+                            animation: fireworkBurst ${1 + Math.random()}s ease-out forwards;
+                        `;
+                        document.body.appendChild(firework);
+                        
+                        setTimeout(() => firework.remove(), 2000);
+                    }
+                }, i * 200);
+            }
+        }
+
+        // Create coin rain
+        function createCoinRain() {
+            const emojis = ['💰', '💵', '💸', '🪙', '💎', '🤑'];
+            
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.style.cssText = `
+                        position: absolute;
+                        font-size: ${2 + Math.random()}rem;
+                        left: ${Math.random() * 100}%;
+                        top: -50px;
+                        z-index: 450;
+                        animation: coinFall ${2 + Math.random() * 2}s linear forwards;
+                    `;
+                    coin.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    document.body.appendChild(coin);
+                    
+                    setTimeout(() => coin.remove(), 4000);
+                }, i * 100);
+            }
+        }
+
+        // Claim button
+        document.getElementById('claimButton').addEventListener('click', function() {
+            this.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+            this.textContent = 'CELEBRATED! ✓';
+            this.disabled = true;
+            
+            // Show special message for Sonal
+            const specialMsg = document.createElement('div');
+            specialMsg.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 30px 50px;
+                border-radius: 20px;
+                color: white;
+                font-size: 1.8rem;
+                font-weight: bold;
+                z-index: 1000;
+                animation: fadeIn 1s forwards;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                text-align: center;
+                max-width: 90%;
+            `;
+            specialMsg.innerHTML = '🏆 Incredible Achievement, Sonal! 🏆<br><span style="font-size: 1.2rem; opacity: 0.9;">₹7000 Sales in One Week!</span>';
+            document.body.appendChild(specialMsg);
+            
+            // Show personal message after 2 seconds
+            setTimeout(() => {
+                const personalMsg = document.createElement('div');
+                personalMsg.style.cssText = `
+                    position: fixed;
+                    bottom: 100px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+                    padding: 20px 40px;
+                    border-radius: 50px;
+                    color: white;
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    z-index: 1000;
+                    animation: heartBeat 1.5s ease-in-out infinite;
+                    box-shadow: 0 20px 40px rgba(255, 107, 107, 0.4);
+                    text-align: center;
+                    max-width: 90%;
+                    border: 3px solid rgba(255, 255, 255, 0.3);
+                `;
+                personalMsg.innerHTML = '❤️ Sonal, You Are The Lucky Person In My Life! ❤️';
+                document.body.appendChild(personalMsg);
+                
+                // Add floating hearts animation
+                createFloatingHearts();
+                
+                setTimeout(() => personalMsg.remove(), 6000);
+            }, 2000);
+            
+            createConfetti();
+            createCoinRain();
+            
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            
+            setTimeout(() => specialMsg.remove(), 4000);
+        });
+
+        // Create floating hearts effect
+        function createFloatingHearts() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.style.cssText = `
+                        position: fixed;
+                        bottom: 0;
+                        left: ${Math.random() * 100}%;
+                        font-size: ${1.5 + Math.random() * 2}rem;
+                        z-index: 999;
+                        animation: floatHeart ${3 + Math.random() * 2}s ease-out forwards;
+                        color: rgba(255, 107, 107, 0.8);
+                    `;
+                    heart.textContent = '❤️';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 5000);
+                }, i * 200);
+            }
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) rotate(0deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(100vh) rotate(720deg);
+                }
+            }
+            @keyframes fireworkBurst {
+                0% {
+                    opacity: 1;
+                    transform: scale(0);
+                }
+                100% {
+                    opacity: 0;
+                    transform: scale(40);
+                }
+            }
+            @keyframes coinFall {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) rotateY(0deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(100vh) rotateY(720deg);
+                }
+            }
+            @keyframes heartBeat {
+                0%, 100% {
+                    transform: translateX(-50%) scale(1);
+                }
+                25% {
+                    transform: translateX(-50%) scale(1.1);
+                }
+                50% {
+                    transform: translateX(-50%) scale(1);
+                }
+                75% {
+                    transform: translateX(-50%) scale(1.1);
+                }
+            }
+            @keyframes floatHeart {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) scale(0);
+                }
+                50% {
+                    opacity: 1;
+                    transform: translateY(-50vh) scale(1) rotate(10deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-100vh) scale(0.5) rotate(-10deg);
+                }
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.8);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize everything
+        window.addEventListener('load', () => {
+            createParticles();
+            initKeyDrag();
+        });
+
+        // Prevent zoom on double tap (mobile)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
